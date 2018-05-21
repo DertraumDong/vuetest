@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="demo">
+    <div >{{ fullName }}</div>
+    <button v-on:click="reverseMessage">dian</button>
+</div>
+<script>
+    var vm = new Vue({
+        el: '#demo',
+        data: {
+            firstName: 'Foo1',
+            lastName: 'Bar'
+        },
+        computed: {
+            fullName: {
+                get : function () {
+                    return this.firstName + ' ' + this.lastName
+                },
+                set : function(val){
+                    var names = val.split(' ')
+                    this.firstName = names[0]
+                    this.lastName = names[names.length - 1]
+                }
+            }
+        },
+        methods: {
+            reverseMessage: function () {
+                //this.message = this.message.split('').reverse().join('').
+                vm.fullName = "DerTraum Liu";
+            }
+        }
+    })
+</script>
+</body>
+</html>

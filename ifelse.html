@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="traum">
+    <div v-if="hello">yes{{ nowIndex }}</div>
+    <div v-else>no</div>
+    <hr>
+    <div style="min-width: 400px;max-width:600px;border: 1px black solid;padding: 10px;">
+        <div style="text-align: right;line-height: 30px;padding: 10px;">
+            <button v-on:click="submitData">提交</button> <button>离开</button>
+        </div>
+        <div style="border: 1px black solid;padding: 10px;"  v-for="(kaoti, key, index) in kaotis" v-if="key == nowIndex">
+            <span>{{ kaoti.index + 1 }} 、  {{ kaoti.title }}</span>
+            <ul v-for="item in kaoti.items">
+                <li class="zl-li" v-bind:class="{activeLi : item.isActive}" v-on:click="chooseLi(item)">
+                    <i>{{ item.title }}</i>
+                    <span>{{ item.info }}</span>
+                </li>
+            </ul>
+        </div>
+        <div style="line-height: 30px;">
+            <div style="width: 50%;float: left;" v-if="nowIndex > 0">
+                <button v-on:click="loadTemplate(0)">上一题</button>
+            </div>
+            <div style="width: 50%;float: left;" v-else>
+                <button disabled="disabled">上一题 隐藏</button>
+            </div>
+            <div style="width: 50%;float: right;text-align: right" v-if="nowIndex < dataCountIndex">
+                <button v-on:click="loadTemplate(1)">下一题</button>
+            </div>
+            <div style="width: 50%;float: right;text-align: right" v-if="nowIndex >= dataCountIndex">
+                <button v-on:click="submitData">提交</button>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+<script>
+    var traum = new Vue({
+        el: '#traum',
+        data : {
+            nowIndex : 0,
+            dataCountIndex : 2,
+            hello : true,
+            type : 'A',
+            kaotis :[
+                {
+                    index : 0,
+                    title : "中国的首都是哪个城市呢？",
+                    items : [
+                        {"title":"A","info":"北京","isActive" : false,'index':0},
+                        {"title":"B","info":"上海","isActive" : false,'index':0},
+                        {"title":"C","info":"广州","isActive" : false,'index':0},
+                        {"title":"D","info":"深圳","isActive" : false,'index':0}
+                    ],
+                },
+                {
+                    index : 1,
+                    title : "广东省省会是哪个城市呢？",
+                    items : [
+                        {"title":"A","info":"北京","isActive" : false,'index':1},
+                        {"title":"B","info":"上海","isActive" : false,'index':1},
+                        {"title":"C","info":"广州","isActive" : false,'index':1},
+                        {"title":"D","info":"深圳","isActive" : false,'index':1}
+                    ],
+                },
+                {
+                    index : 2,
+                    title : "深圳市政府在哪个区呢？",
+                    items : [
+                        {"title":"A","info":"福田","isActive" : false,'index':2},
+                        {"title":"B","info":"南山","isActive" : false,'index':2},
+                        {"title":"C","info":"罗湖","isActive" : false,'index':2},
+                        {"title":"D","info":"宝安","isActive" : false,'index':2}
+                    ],
+                }
+            ]
+        },
+        methods : {
+            chooseLi :function(e){
+                var o = e.index
+                for(var i = 0 ; i < this.kaotis[o].items.length ; i++){
+                    this.kaotis[o].items[i].isActive=false;
+                }
+                e.isActive=true;
+            },
+            loadTemplate : function(e){
+                if(e==0){
+                    this.nowIndex = this.nowIndex-1;
+                }
+                if(e==1){
+                    this.nowIndex = this.nowIndex+1;
+                }
+            },
+            showData : function(){
+                var list = this.kaotis;
+                for (var i=0;i < list.length ; i++){
+                    var items = list[i].items;
+                    for(var j = 0 ; j < items.length ; j++){
+                        console.info("data : " + items[j].title + " - " + items[j].info + " - " + items[j].isActive + " - " + items[j].index )
+                    }
+                }
+
+            },
+            submitData : function(){
+                var data  = this.kaotis;
+                axios.defaults.headers.post['Content-Type'] = 'application/json';
+                axios({
+                    method: 'post',
+                    url: '/web/api',
+                    data: JSON.stringify(data),
+
+                }).then(function (response) {
+                        console.info(response);
+                    })
+                    .catch(function (error) {
+                        console.info(error);
+                    })
+                // axios.post('/web/api',{params:JSON.stringify(data)})
+            }
+        }
+
+    })
+</script>
+<style>
+    .zl-li{
+        list-style-type: none;
+        cursor: pointer;
+    }
+    .activeLi {
+        background-color: beige;
+    }
+    .zl-li :hover{
+        background-color: beige;
+    }
+</style>
+</body>
+</html>
