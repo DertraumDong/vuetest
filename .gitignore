@@ -4,3 +4,4 @@
 .idea/vuetest.iml
 .idea/workspace.xml
 .idea/vcs.xml
+webpack/node_modules/*
